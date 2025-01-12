@@ -1,10 +1,9 @@
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
-
+import java.util.*;
 
 public class Main {
+    static Scanner lector = new Scanner(System.in);
+
     static List<Usuari> usuaris = new ArrayList<>();
     static List<Moderador> moderadors = new ArrayList<>();
 
@@ -28,21 +27,18 @@ public class Main {
 //        }
 //
 //        if(seguirIntentant) {
-//            String opcio = menu();
-//            while (!opcio.equals("0"))
+//            int opcio = menu();
+//            while (opcio != 0)
 //            {
 //                switch (opcio) {
-//                case "1":
+//                case 1:
 //                    enviarMissatgePrivat(usuaris,usuari);
 //                    break;
-//                case "2":
+//                case 2:
 //                    int a = loginModerador(moderadors);
 //                    break;
-//                case "3":
+//                case 3:
 //
-//                    break;
-//                case "0":
-//                    System.out.println("Adéu!");
 //                    break;
 //                default:
 //                    System.out.println("Opció no vàlida");
@@ -50,30 +46,25 @@ public class Main {
 //                }
 //                opcio = menu();
 //            }
-//        } else {
-//            System.out.println("Adéu!");
 //        }
+//
+//            System.out.println("Adéu!");
     }
 
-    public static Connection connect() {
-    // connection string
-        String url = "jdbc:sqlite:./db/hatebuck.db";
-        Connection conn = null;
-
+    public static Connection connect(String path) {
         try {
-            conn = DriverManager.getConnection(url);
-            System.out.println("Connection to SQLite has been established.");
+            return DriverManager.getConnection( "jdbc:sqlite:" + path);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return conn;
+        return null;
     }
 
     //retorna -1 si hi ha un error
     //retorna 0 si tot ha anat bé
     private static int inicialitzar()
     {
-        Connection conn = connect();
+        Connection conn = connect("./db/hatebuck.db");
         ResultSet rs;
         if (conn == null) {
             return -1;
@@ -83,13 +74,29 @@ public class Main {
             String sql = "SELECT * FROM Usuari";
             rs = conn.createStatement().executeQuery(sql);
             while (rs.next()) {
-                usuaris.add(new Usuari(rs.getString("nomUsuari"), rs.getString("email"), rs.getString("password")));
+                //TODO: Agafar els Texts de l'usuari (cada simbol és diferent o han de ser el mateix (reutilitzar paraules))
+                List<Text> texts = new ArrayList<>();
+
+                usuaris.add(new Usuari(rs.getString("nomUsuari"), rs.getString("email"), rs.getString("password"), texts));
             }
+
+            for (Usuari u : usuaris) {
+                sql = "SELECT * FROM RelacioUsuari WHERE idUsuari1 = '" + u.getNomUsuari() + "'";
+                rs = conn.createStatement().executeQuery(sql);
+                while (rs.next()) {
+                    Usuari u2 = buscarUsuari(usuaris, rs.getString("idUsuari2"));
+                    EstatUsuari estat = EstatUsuari.getEstatUsuari(rs.getInt("idEstatAmic"));
+                    u.assignarRelacio(u2, estat);
+                }
+            }
+
             sql = "SELECT * FROM Moderador";
             rs = conn.createStatement().executeQuery(sql);
             while (rs.next()) {
                 moderadors.add(new Moderador(rs.getString("nomUsuari"), rs.getString("email"), rs.getString("password")));
             }
+
+            conn.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -97,13 +104,17 @@ public class Main {
         return 0;
     }
 
-    private static String menu() {
+    private static int menu() {
         System.out.println("1. Enviar missatge privat");
         System.out.println("2. Modificar text penjat per un usuari");
         System.out.println("3. Canviar relació amb un usuari");
         System.out.println("0. Sortir");
         System.out.println("Escull una opció: ");
-        return System.console().readLine();
+
+        int opcio = lector.nextInt();
+        lector.nextLine();
+
+        return opcio;
     }
 
     //retorna -1 si l'usuari no existeix
@@ -111,7 +122,7 @@ public class Main {
     //retorna 1 si tot ha anat bé
     private static int login(List<Usuari> usuaris, Usuari usu) {
         System.out.println("Entra el nom d'usuari: ");
-        String username = System.console().readLine();
+        String username = lector.nextLine();
 
         Usuari u = buscarUsuari(usuaris, username);
         if (u == null) {
@@ -121,7 +132,7 @@ public class Main {
         else
         {
             System.out.println("Entra la contrasenya: ");
-            String password = System.console().readLine();
+            String password = lector.nextLine();
             if (u.getContrasenya().equals(password)) {
                 usu = u;
                 return 1;
