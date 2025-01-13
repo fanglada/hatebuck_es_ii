@@ -25,22 +25,26 @@ public class Paraula extends Element {
 
     void calculProbDeSerModificada()
     {
-        double random = Math.random()*10;
-        if (random <= 2.5)
+        double random = Math.random();
+        if (random <= 0.5)
         {
             canviarFormat(new ParaulaOriginal());
         }
-        else if(random <= 5)
-        {
-            canviarFormat(new Oculta());
-        }
-        else if(random <= 7.5)
-        {
-            canviarFormat(new ParaulaGrollera());
-        }
         else
         {
-            canviarFormat(new Prauala());
+            random = Math.random()*3;
+            if (random <= 1)
+            {
+                canviarFormat(new ParaulaGrollera());
+            }
+            else if (random <= 2)
+            {
+                canviarFormat(new Oculta());
+            }
+            else
+            {
+                canviarFormat(new Prauala());
+            }
         }
     }
 
