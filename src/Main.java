@@ -211,8 +211,7 @@ public class Main {
 
         usuari.enviarMissatgePrivat(destinatari, m, false);
 
-        System.out.println("Missatge enviat correctament");
-        System.out.println(m.contingut());
+        System.out.println("Missatge enviat correctament: " + m.contingut() + "\n");
     }
 
     private static Missatge entrarMissatge() {
