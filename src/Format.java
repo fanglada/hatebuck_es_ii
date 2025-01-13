@@ -1,3 +1,3 @@
 public interface Format {
-    public void contingut();
+    public String contingut(String contingut);
 }
