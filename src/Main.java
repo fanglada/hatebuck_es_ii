@@ -37,11 +37,11 @@ public class Main {
                     int a = loginModerador();
                     if(a==1)
                     {
-                        canviarTextUsuari();
+//                        canviarTextUsuari();
                     }
                     break;
                 case 3:
-
+                    canviarRelacioUsuari();
                     break;
                 default:
                     System.out.println("Opció no vàlida");
@@ -77,8 +77,21 @@ public class Main {
             String sql = "SELECT * FROM Usuari";
             rs = conn.createStatement().executeQuery(sql);
             while (rs.next()) {
-                //TODO: Agafar els Texts de l'usuari (cada simbol és diferent o han de ser el mateix (reutilitzar paraules))
                 List<Text> texts = new ArrayList<>();
+
+                String sql2 = "SELECT * FROM Text WHERE idUsuari = '" + rs.getString("nomUsuari") + "'";
+                ResultSet rs2 = conn.createStatement().executeQuery(sql2);
+                while (rs2.next()) {
+                    String sql3 = "SELECT * FROM ElementText et INNER JOIN Element e ON e.idElement=et.idElement WHERE idText = " + rs2.getInt("idText");
+                    ResultSet rs3 = conn.createStatement().executeQuery(sql3);
+                    List<Element> elements = new ArrayList<>();
+                    while (rs3.next()) {
+                        if(rs3.getInt("idTipusElement") == 1)
+                            elements.add(new Paraula(rs3.getString("contingut")));
+                        else
+                            elements.add(new SignesPuntuacio(rs3.getString("contingut")));
+                    }
+                }
 
                 usuaris.add(new Usuari(rs.getString("nomUsuari"), rs.getString("email"), rs.getString("password"), texts));
             }
@@ -232,4 +245,31 @@ public class Main {
         }
         return m;
     }
+
+    private static void canviarRelacioUsuari() {
+        System.out.println("Entra el nom de l'usuari amb el que vols canviar la relació: ");
+        String nomUsuari = lector.nextLine();
+        Usuari u = buscarUsuari(nomUsuari);
+
+        if (u == null) {
+            System.out.println("Usuari no trobat");
+            return;
+        }
+
+        EstatUsuari estatAntic = u.obtenirRelacio(u);
+
+        System.out.println("Entra el nou estat de la relació: ");
+        System.out.println("1. Amic");
+        System.out.println("2. Conegut");
+        System.out.println("3. Saludat");
+        int opcio = lector.nextInt();
+        lector.nextLine();
+
+        EstatUsuari estat = EstatUsuari.getEstatUsuari(opcio);
+
+        u.assignarRelacio(u, estat);
+
+        System.out.println("Relació amb "+nomUsuari+" canviada correctament ("+((estatAntic == null) ? "" : estatAntic) +" -> "+estat+")\n");
+    }
 }
+

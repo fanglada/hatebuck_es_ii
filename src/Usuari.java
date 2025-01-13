@@ -39,6 +39,10 @@ public class Usuari {
         relacions.remove(usuari);
     }
 
+    public EstatUsuari obtenirRelacio(Usuari usuari) {
+        return relacions.get(usuari);
+    }
+
     public void enviarMissatgePrivat(Usuari destinatari, Missatge missatge, boolean notificar) {
         destinatari.missatgesRebuts.add(missatge);
         missatgesEnviats.add(missatge);
