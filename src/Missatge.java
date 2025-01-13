@@ -6,12 +6,23 @@ public class Missatge {
     boolean notificar;
     ArrayList<Element> elements;
 
+    public Missatge(int idText)
+    {
+        this.idText = idText;
+        this.notificar = false;
+        elements = new ArrayList<>();
+    }
+
     public String contingut()
     {
         String contingut = "";
-        for (Element element : elements)
-        {
-            contingut += element.contingut();
+        for (int i = 0; i < elements.size(); i++) {
+            Element e = elements.get(i);
+            if(i != 0 && e instanceof Paraula)
+            {
+                contingut += " ";
+            }
+            contingut += e.contingut();
         }
         return contingut;
     }

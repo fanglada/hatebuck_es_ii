@@ -211,13 +211,13 @@ public class Main {
         usuari.enviarMissatgePrivat(destinatari, m, false);
 
         System.out.println("Missatge enviat correctament");
-        m.contingut();
+        System.out.println(m.contingut());
     }
 
     private static Missatge entrarMissatge() {
 
         System.out.println("Entra el missatge paraula a paraula: (simbols també)");
-        Missatge m = new Missatge();
+        Missatge m = new Missatge(-1);
         String tipus="";
 
         while(tipus.compareTo("F") != 0) {
