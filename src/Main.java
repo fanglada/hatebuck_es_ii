@@ -84,13 +84,14 @@ public class Main {
                 while (rs2.next()) {
                     String sql3 = "SELECT * FROM ElementText et INNER JOIN Element e ON e.idElement=et.idElement WHERE idText = " + rs2.getInt("idText");
                     ResultSet rs3 = conn.createStatement().executeQuery(sql3);
-                    List<Element> elements = new ArrayList<>();
+                    ArrayList<Element> elements = new ArrayList<>();
                     while (rs3.next()) {
                         if(rs3.getInt("idTipusElement") == 1)
                             elements.add(new Paraula(rs3.getString("contingut")));
                         else
                             elements.add(new SignesPuntuacio(rs3.getString("contingut")));
                     }
+                    texts.add(new Text(rs2.getInt("idText"), elements));
                 }
 
                 usuaris.add(new Usuari(rs.getString("nomUsuari"), rs.getString("email"), rs.getString("password"), texts));
