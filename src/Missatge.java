@@ -6,13 +6,23 @@ public class Missatge {
     boolean notificar;
     ArrayList<Element> elements;
 
-    public void contingut()
+    public String contingut()
     {
-
+        String contingut = "";
+        for (Element element : elements)
+        {
+            contingut += element.contingut();
+        }
+        return contingut;
     }
 
     void crearParaulesSignes()
     {
 
+    }
+
+    public void afegirElementAlFinal(Element element)
+    {
+        elements.add(element);
     }
 }

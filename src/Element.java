@@ -2,8 +2,13 @@ public abstract class Element {
 
     String contingut;
 
-    public void contingut()
+    public Element(String contingut)
     {
+        this.contingut = contingut;
+    }
 
+    public String contingut()
+    {
+        return contingut;
     }
 }

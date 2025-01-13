@@ -1,8 +1,12 @@
 public class SignesPuntuacio extends Element {
 
-    @Override
-    public void contingut()
+    public SignesPuntuacio(String contingut)
     {
-
+        super(contingut);
+    }
+    @Override
+    public String contingut()
+    {
+        return contingut;
     }
 }

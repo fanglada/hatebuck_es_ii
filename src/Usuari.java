@@ -42,6 +42,5 @@ public class Usuari {
     public void enviarMissatgePrivat(Usuari destinatari, Missatge missatge, boolean notificar) {
         destinatari.missatgesRebuts.add(missatge);
         missatgesEnviats.add(missatge);
-
     }
 }

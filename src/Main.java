@@ -3,7 +3,6 @@ import java.util.*;
 
 public class Main {
     static Scanner lector = new Scanner(System.in);
-
     static List<Usuari> usuaris = new ArrayList<>();
     static List<Moderador> moderadors = new ArrayList<>();
 
@@ -14,41 +13,45 @@ public class Main {
             return;
         }
 
-//        Usuari usuari = new Usuari("","", "");
-//
-//        boolean seguirIntentant = true;
-//
-//        while (login(usuaris, usuari)<0 && seguirIntentant) {
-//            System.out.println("Vols tornar a intentar-ho? (S/N)");
-//            String resposta = System.console().readLine();
-//            if(resposta.equals("N")) {
-//                seguirIntentant = false;
-//            }
-//        }
-//
-//        if(seguirIntentant) {
-//            int opcio = menu();
-//            while (opcio != 0)
-//            {
-//                switch (opcio) {
-//                case 1:
-//                    enviarMissatgePrivat(usuaris,usuari);
-//                    break;
-//                case 2:
-//                    int a = loginModerador(moderadors);
-//                    break;
-//                case 3:
-//
-//                    break;
-//                default:
-//                    System.out.println("Opció no vàlida");
-//                    break;
-//                }
-//                opcio = menu();
-//            }
-//        }
-//
-//            System.out.println("Adéu!");
+        Usuari usuari = new Usuari("","", "", null);
+
+        boolean seguirIntentant = true;
+
+        while (login(usuari)<0 && seguirIntentant) {
+            System.out.println("Vols tornar a intentar-ho? (S/N)");
+            String resposta = lector.nextLine();
+            if(resposta.equals("N")) {
+                seguirIntentant = false;
+            }
+        }
+
+        if(seguirIntentant) {
+            int opcio = menu();
+            while (opcio != 0)
+            {
+                switch (opcio) {
+                case 1:
+                    enviarMissatgePrivat(usuari);
+                    break;
+                case 2:
+                    int a = loginModerador();
+                    if(a==1)
+                    {
+                        canviarTextUsuari();
+                    }
+                    break;
+                case 3:
+
+                    break;
+                default:
+                    System.out.println("Opció no vàlida");
+                    break;
+                }
+                opcio = menu();
+            }
+        }
+
+            System.out.println("Adéu!");
     }
 
     public static Connection connect(String path) {
@@ -84,7 +87,7 @@ public class Main {
                 sql = "SELECT * FROM RelacioUsuari WHERE idUsuari1 = '" + u.getNomUsuari() + "'";
                 rs = conn.createStatement().executeQuery(sql);
                 while (rs.next()) {
-                    Usuari u2 = buscarUsuari(usuaris, rs.getString("idUsuari2"));
+                    Usuari u2 = buscarUsuari(rs.getString("idUsuari2"));
                     EstatUsuari estat = EstatUsuari.getEstatUsuari(rs.getInt("idEstatAmic"));
                     u.assignarRelacio(u2, estat);
                 }
@@ -120,11 +123,11 @@ public class Main {
     //retorna -1 si l'usuari no existeix
     //retorna -2 si la contrasenya és incorrecta
     //retorna 1 si tot ha anat bé
-    private static int login(List<Usuari> usuaris, Usuari usu) {
+    private static int login(Usuari usu) {
         System.out.println("Entra el nom d'usuari: ");
         String username = lector.nextLine();
 
-        Usuari u = buscarUsuari(usuaris, username);
+        Usuari u = buscarUsuari(username);
         if (u == null) {
             System.out.println("Usuari no trobat");
             return -1;
@@ -145,32 +148,37 @@ public class Main {
         }
     }
 
-//    private static int loginModerador(List<Moderador> moderadors) {
-//        System.out.println("Entra el nom d'usuari: ");
-//        String username = System.console().readLine();
-//
-//        for (Moderador moderador : moderadors) {
-//            if (moderador.getNomUsuari().equals(username)) {
-//                System.out.println("Entra la contrasenya: ");
-//                String password = System.console().readLine();
-//                if (moderador.getContrasenya().equals(password)) {
-//                    return 1;
-//                }
-//                else
-//                {
-//                    System.out.println("Contrasenya incorrecta");
-//                    return -2;
-//                }
-//            }
-//            else
-//            {
-//                System.out.println("Usuari no trobat");
-//                return -1;
-//            }
-//        }
-//    }
+    //retorna -1 si l'usuari no existeix
+    //retorna -2 si la contrasenya és incorrecta
+    //retorna 1 si tot ha anat bé
+    private static int loginModerador() {
+        int res = 0;
+        System.out.println("Entra el nom d'usuari: ");
+        String username = lector.nextLine();
 
-    private static Usuari buscarUsuari(List<Usuari> usuaris, String nomUsuari) {
+        for (Moderador moderador : moderadors) {
+            if (moderador.getNomUsuari().equals(username)) {
+                System.out.println("Entra la contrasenya: ");
+                String password = lector.nextLine();
+                if (moderador.getContrasenya().equals(password)) {
+                    res=1;
+                }
+                else
+                {
+                    System.out.println("Contrasenya incorrecta");
+                    res=-2;
+                }
+            }
+            else
+            {
+                System.out.println("Usuari no trobat");
+                res=-1;
+            }
+        }
+        return res;
+    }
+
+    private static Usuari buscarUsuari(String nomUsuari) {
         for (Usuari usuari : usuaris) {
             if (usuari.getNomUsuari().equals(nomUsuari)) {
                 return usuari;
@@ -179,15 +187,49 @@ public class Main {
         return null;
     }
 
-//    private void enviarMissatgePrivat(List<Usuari> usuaris, Usuari usuari)
-//    {
-//        System.out.println("Entra el nom de l'usuari al que vols enviar el missatge: ");
-//        String nomUsuari = System.console().readLine();
-//        Usuari destinatari = buscarUsuari(usuaris, nomUsuari);
-//
-//        Missatge m = entrarMissatge();
-//
-//        usuari.enviarMissatgePrivat(destinatari, m, false);
-//
-//    }
+    private static void enviarMissatgePrivat(Usuari usuari)
+    {
+        System.out.println("Entra el nom de l'usuari al que vols enviar el missatge: ");
+        String nomUsuari = lector.nextLine();
+        Usuari destinatari = buscarUsuari(nomUsuari);
+
+        Missatge m = entrarMissatge();
+
+        usuari.enviarMissatgePrivat(destinatari, m, false);
+
+        System.out.println("Missatge enviat correctament");
+        m.contingut();
+    }
+
+    private static Missatge entrarMissatge() {
+
+        System.out.println("Entra el missatge paraula a paraula: (simbols també)");
+        Missatge m = new Missatge();
+        String tipus="";
+
+        while(tipus.compareTo("F") != 0) {
+            System.out.println("Vols entrar una paraula, un signe de puntuació o ja estas? (P/S/F)");
+            tipus = lector.nextLine();
+
+            switch (tipus)
+            {
+                case "P":
+                    System.out.println("Entra la paraula: ");
+                    Paraula p = new Paraula(lector.nextLine());
+                    m.afegirElementAlFinal(p);
+                    break;
+                case "S":
+                    System.out.println("Entra el signe de puntuació: ");
+                    SignesPuntuacio s = new SignesPuntuacio(lector.nextLine());
+                    m.afegirElementAlFinal(s);
+                    break;
+                case "F":
+                    break;
+                default:
+                    System.out.println("Opció no vàlida");
+                    break;
+            }
+        }
+        return m;
+    }
 }
