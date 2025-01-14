@@ -23,4 +23,23 @@ public class Text {
         }
         return contingut;
     }
+
+    public String contingutOriginal()
+    {
+        String contingut = "";
+        for (int i = 0; i < elements.size(); i++) {
+            Element e = elements.get(i);
+            if(i != 0 && e instanceof Paraula)
+            {
+                contingut += " ";
+            }
+            contingut += e.contingutOriginal();
+        }
+        return contingut;
+    }
+
+    public void afegirElementAlFinal(Element element)
+    {
+        elements.add(element);
+    }
 }

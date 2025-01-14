@@ -18,7 +18,7 @@ public class Paraula extends Element {
         return mostrar.contingut(contingut);
     }
 
-    public void canviarFormat(Format format)
+    void canviarFormat(Format format)
     {
         this.mostrar = format;
     }

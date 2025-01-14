@@ -2,11 +2,7 @@ public class Moderador {
 
     String nomUsuari;
     String email;
-
     String contrasenya;
-
-
-    //falten atributs de les relacions
 
     public Moderador(String nomUsuari, String email, String contrasenya)
     {
@@ -21,14 +17,5 @@ public class Moderador {
 
     public String getContrasenya() {
         return contrasenya;
-    }
-    public void eliminarContingut(Text text)
-    {
-
-    }
-
-    public void publicarText(Text text, Usuari usuari)
-    {
-
     }
 }

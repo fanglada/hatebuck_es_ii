@@ -47,4 +47,14 @@ public class Usuari {
         destinatari.missatgesRebuts.add(missatge);
         missatgesEnviats.add(missatge);
     }
+
+    public Iterator<Text> obtenirTextos()
+    {
+        return texts.iterator();
+    }
+
+    public void canviarText(int posicio, Text text)
+    {
+        texts.set(posicio, text);
+    }
 }

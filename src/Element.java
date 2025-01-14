@@ -11,4 +11,9 @@ public abstract class Element {
     {
         return contingut;
     }
+
+    public String contingutOriginal()
+    {
+        return contingut;
+    }
 }

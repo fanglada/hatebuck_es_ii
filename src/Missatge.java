@@ -27,11 +27,6 @@ public class Missatge {
         return contingut;
     }
 
-    void crearParaulesSignes()
-    {
-
-    }
-
     public void afegirElementAlFinal(Element element)
     {
         elements.add(element);

@@ -17,12 +17,12 @@ public class Main {
 
         boolean seguirIntentant = true;
 
-        while (login(usuari)<0 && seguirIntentant) {
+        usuari = login();
+        while (usuari==null && seguirIntentant) {
             System.out.println("Vols tornar a intentar-ho? (S/N)");
             String resposta = lector.nextLine();
-            if(resposta.equals("N")) {
-                seguirIntentant = false;
-            }
+            if(resposta.equals("N")) seguirIntentant = false;
+            else usuari = login();
         }
 
         if(seguirIntentant) {
@@ -34,14 +34,14 @@ public class Main {
                     enviarMissatgePrivat(usuari);
                     break;
                 case 2:
-                    int a = loginModerador();
-                    if(a==1)
+                    Moderador moderador = loginModerador();
+                    if(moderador != null)
                     {
-//                        canviarTextUsuari();
+                        canviarTextUsuari(moderador);
                     }
                     break;
                 case 3:
-                    canviarRelacioUsuari();
+                    canviarRelacioUsuari(usuari);
                     break;
                 default:
                     System.out.println("Opció no vàlida");
@@ -137,27 +137,26 @@ public class Main {
     //retorna -1 si l'usuari no existeix
     //retorna -2 si la contrasenya és incorrecta
     //retorna 1 si tot ha anat bé
-    private static int login(Usuari usu) {
+    private static Usuari login() {
         System.out.println("Entra el nom d'usuari: ");
         String username = lector.nextLine();
 
         Usuari u = buscarUsuari(username);
         if (u == null) {
             System.out.println("Usuari no trobat");
-            return -1;
+            return null;
         }
         else
         {
             System.out.println("Entra la contrasenya: ");
             String password = lector.nextLine();
             if (u.getContrasenya().equals(password)) {
-                usu = u;
-                return 1;
+                return u;
             }
             else
             {
                 System.out.println("Contrasenya incorrecta");
-                return -2;
+                return null;
             }
         }
     }
@@ -165,37 +164,44 @@ public class Main {
     //retorna -1 si l'usuari no existeix
     //retorna -2 si la contrasenya és incorrecta
     //retorna 1 si tot ha anat bé
-    private static int loginModerador() {
-        int res = 0;
-        System.out.println("Entra el nom d'usuari: ");
+    private static Moderador loginModerador() {
+        System.out.println("Entra el nom del moderador: ");
         String username = lector.nextLine();
 
-        for (Moderador moderador : moderadors) {
-            if (moderador.getNomUsuari().equals(username)) {
-                System.out.println("Entra la contrasenya: ");
-                String password = lector.nextLine();
-                if (moderador.getContrasenya().equals(password)) {
-                    res=1;
-                }
-                else
-                {
-                    System.out.println("Contrasenya incorrecta");
-                    res=-2;
-                }
+        Moderador m = buscarModerador(username);
+        if (m == null) {
+            System.out.println("Moderador no trobat");
+            return null;
+        }
+        else
+        {
+            System.out.println("Entra la contrasenya: ");
+            String password = lector.nextLine();
+            if (m.getContrasenya().equals(password)) {
+                return m;
             }
             else
             {
-                System.out.println("Usuari no trobat");
-                res=-1;
+                System.out.println("Contrasenya incorrecta");
+                return null;
             }
         }
-        return res;
     }
 
     private static Usuari buscarUsuari(String nomUsuari) {
         for (Usuari usuari : usuaris) {
             if (usuari.getNomUsuari().equals(nomUsuari)) {
                 return usuari;
+            }
+        }
+        return null;
+    }
+
+    private static Moderador buscarModerador(String nomModerador)
+    {
+        for (Moderador m : moderadors) {
+            if (m.getNomUsuari().equals(nomModerador)) {
+                return m;
             }
         }
         return null;
@@ -211,7 +217,8 @@ public class Main {
 
         usuari.enviarMissatgePrivat(destinatari, m, false);
 
-        System.out.println("Missatge enviat correctament: " + m.contingut() + "\n");
+        System.out.println("L'usuari " + usuari.getNomUsuari() + " ha enviat el missatge: "
+                + m.contingut() + " a l'usuari " + destinatari.getNomUsuari() + "\n");
     }
 
     private static Missatge entrarMissatge() {
@@ -246,7 +253,7 @@ public class Main {
         return m;
     }
 
-    private static void canviarRelacioUsuari() {
+    private static void canviarRelacioUsuari(Usuari usuari) {
         System.out.println("Entra el nom de l'usuari amb el que vols canviar la relació: ");
         String nomUsuari = lector.nextLine();
         Usuari u = buscarUsuari(nomUsuari);
@@ -256,7 +263,7 @@ public class Main {
             return;
         }
 
-        EstatUsuari estatAntic = u.obtenirRelacio(u);
+        EstatUsuari estatAntic = usuari.obtenirRelacio(u);
 
         System.out.println("Entra el nou estat de la relació: ");
         System.out.println("1. Amic");
@@ -267,9 +274,79 @@ public class Main {
 
         EstatUsuari estat = EstatUsuari.getEstatUsuari(opcio);
 
-        u.assignarRelacio(u, estat);
+        usuari.assignarRelacio(u, estat);
 
         System.out.println("Relació amb "+nomUsuari+" canviada correctament ("+((estatAntic == null) ? "" : estatAntic) +" -> "+estat+")\n");
     }
-}
 
+    private static void canviarTextUsuari(Moderador m)
+    {
+        System.out.println("Entra el nom de l'usuari del text que vols modificar: ");
+        String nomUsuari = lector.nextLine();
+        Usuari u = buscarUsuari(nomUsuari);
+
+        if (u == null) {
+            System.out.println("Usuari no trobat");
+            return;
+        }
+
+        System.out.println("Textos originals de l'usuari "+nomUsuari+": ");
+        mostrarTextosUsuari(u);
+        System.out.println("Entra el número del text que vols modificar: ");
+        int numText = lector.nextInt();
+        lector.nextLine();
+
+        Text t = entrarText();
+
+        u.canviarText(numText-1, t);
+
+        System.out.println("Text modificat pel moderador: " + m.getNomUsuari());
+        System.out.println("Nou text de l'usuari " + nomUsuari + ": " + t.contingut() + "\n");
+
+    }
+
+    public static void mostrarTextosUsuari(Usuari u)
+    {
+        int i=0;
+        Iterator<Text> it = u.obtenirTextos();
+        while(it.hasNext())
+        {
+            i++;
+            Text t = it.next();
+            System.out.println(i + ". " + t.contingutOriginal() + "\n");
+        }
+    }
+
+    public static Text entrarText()
+    {
+        System.out.println("Entra el text paraula a paraula: (simbols també)");
+        Text t = new Text(-1, new ArrayList<>());
+        String tipus="";
+
+        while(tipus.compareTo("F") != 0) {
+            System.out.println("Vols entrar una paraula, un signe de puntuació o ja estas? (P/S/F)");
+            tipus = lector.nextLine();
+
+            switch (tipus)
+            {
+                case "P":
+                    System.out.println("Entra la paraula: ");
+                    Paraula p = new Paraula(lector.nextLine());
+                    t.afegirElementAlFinal(p);
+                    break;
+                case "S":
+                    System.out.println("Entra el signe de puntuació: ");
+                    SignesPuntuacio s = new SignesPuntuacio(lector.nextLine());
+                    t.afegirElementAlFinal(s);
+                    break;
+                case "F":
+                    break;
+                default:
+                    System.out.println("Opció no vàlida");
+                    break;
+            }
+        }
+        return t;
+    }
+
+}
