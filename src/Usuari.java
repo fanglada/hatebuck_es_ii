@@ -19,12 +19,12 @@ public class Usuari {
         this.texts = texts;
     }
 
-    public String getNomUsuari() {
-        return nomUsuari;
+    public boolean compararNomUsuari(String n) {
+        return nomUsuari.compareTo(n) == 0;
     }
 
-    public String getContrasenya() {
-        return contrasenya;
+    public boolean compararContrasenya(String c) {
+        return contrasenya.compareTo(c) == 0;
     }
 
     public void assignarRelacio(Usuari usuari, EstatUsuari estat) {
@@ -56,5 +56,10 @@ public class Usuari {
     public void canviarText(int posicio, Text text)
     {
         texts.set(posicio, text);
+    }
+
+    @Override
+    public String toString() {
+        return nomUsuari;
     }
 }

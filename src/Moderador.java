@@ -11,11 +11,16 @@ public class Moderador {
         this.contrasenya = contrasenya;
     }
 
-    public String getNomUsuari() {
-        return nomUsuari;
+    public boolean compararNomUsuari(String n) {
+        return nomUsuari.compareTo(n) == 0;
     }
 
-    public String getContrasenya() {
-        return contrasenya;
+    public boolean compararContrasenya(String c) {
+        return contrasenya.compareTo(c) == 0;
+    }
+
+    @Override
+    public String toString() {
+        return nomUsuari;
     }
 }

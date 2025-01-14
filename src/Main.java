@@ -98,7 +98,7 @@ public class Main {
             }
 
             for (Usuari u : usuaris) {
-                sql = "SELECT * FROM RelacioUsuari WHERE idUsuari1 = '" + u.getNomUsuari() + "'";
+                sql = "SELECT * FROM RelacioUsuari WHERE idUsuari1 = '" + u + "'";
                 rs = conn.createStatement().executeQuery(sql);
                 while (rs.next()) {
                     Usuari u2 = buscarUsuari(rs.getString("idUsuari2"));
@@ -150,7 +150,7 @@ public class Main {
         {
             System.out.println("Entra la contrasenya: ");
             String password = lector.nextLine();
-            if (u.getContrasenya().equals(password)) {
+            if (u.compararContrasenya(password)) {
                 return u;
             }
             else
@@ -177,7 +177,7 @@ public class Main {
         {
             System.out.println("Entra la contrasenya: ");
             String password = lector.nextLine();
-            if (m.getContrasenya().equals(password)) {
+            if (m.compararContrasenya(password)) {
                 return m;
             }
             else
@@ -190,7 +190,7 @@ public class Main {
 
     private static Usuari buscarUsuari(String nomUsuari) {
         for (Usuari usuari : usuaris) {
-            if (usuari.getNomUsuari().equals(nomUsuari)) {
+            if (usuari.compararNomUsuari(nomUsuari)) {
                 return usuari;
             }
         }
@@ -200,7 +200,7 @@ public class Main {
     private static Moderador buscarModerador(String nomModerador)
     {
         for (Moderador m : moderadors) {
-            if (m.getNomUsuari().equals(nomModerador)) {
+            if (m.compararNomUsuari(nomModerador)) {
                 return m;
             }
         }
@@ -217,8 +217,8 @@ public class Main {
 
         usuari.enviarMissatgePrivat(destinatari, m, false);
 
-        System.out.println("L'usuari " + usuari.getNomUsuari() + " ha enviat el missatge: "
-                + m.contingut() + " a l'usuari " + destinatari.getNomUsuari() + "\n");
+        System.out.println("L'usuari " + usuari + " ha enviat el missatge: "
+                + m.contingut() + " a l'usuari " + destinatari + "\n");
     }
 
     private static Missatge entrarMissatge() {
@@ -300,7 +300,7 @@ public class Main {
 
         u.canviarText(numText-1, t);
 
-        System.out.println("Text modificat pel moderador: " + m.getNomUsuari());
+        System.out.println("Text modificat pel moderador: " + m);
         System.out.println("Nou text de l'usuari " + nomUsuari + ": " + t.contingut() + "\n");
 
     }
