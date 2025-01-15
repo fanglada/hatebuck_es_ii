@@ -213,12 +213,19 @@ public class Main {
         String nomUsuari = lector.nextLine();
         Usuari destinatari = buscarUsuari(nomUsuari);
 
-        Missatge m = entrarMissatge();
+        if (destinatari == null) {
+            System.out.println("Usuari no trobat");
+        }
+        else
+        {
+            Missatge m = entrarMissatge();
 
-        usuari.enviarMissatgePrivat(destinatari, m, false);
+            usuari.enviarMissatgePrivat(destinatari, m, false);
 
-        System.out.println("L'usuari " + usuari + " ha enviat el missatge: "
-                + m.contingut() + " a l'usuari " + destinatari + "\n");
+            System.out.println("L'usuari " + usuari + " ha enviat el missatge: "
+                    + m.contingut() + " a l'usuari " + destinatari + "\n");
+        }
+
     }
 
     private static Missatge entrarMissatge() {
