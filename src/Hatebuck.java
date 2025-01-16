@@ -1,7 +1,7 @@
 import java.sql.*;
 import java.util.*;
 
-public class Main {
+public class Hatebuck {
     static Scanner lector = new Scanner(System.in);
     static List<Usuari> usuaris = new ArrayList<>();
     static List<Moderador> moderadors = new ArrayList<>();
